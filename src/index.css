@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.react-grid-layout {
+  @apply bg-transparent;
+}
+
+.react-grid-item {
+  @apply touch-none;
+}
+
+.react-grid-item.react-grid-placeholder {
+  @apply bg-blue-200 opacity-20 border border-blue-300 rounded-lg;
+}
+
+.react-grid-item > .react-resizable-handle {
+  @apply absolute bottom-0 right-0 w-5 h-5 bg-gray-200 cursor-se-resize hover:bg-gray-300 rounded-tl-lg;
+}
+
+.react-grid-item > .react-resizable-handle::after {
+  content: '';
+}
