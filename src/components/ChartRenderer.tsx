@@ -25,6 +25,7 @@ interface ChartRendererProps {
 
 export const ChartRenderer = ({ config, dataset }: ChartRendererProps) => {
   const data = processChartData(dataset, config);
+  const colors = config.colors || ['#3b82f6', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
 
   if (!data || data.length === 0) {
     return (
@@ -44,9 +45,12 @@ export const ChartRenderer = ({ config, dataset }: ChartRendererProps) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="80%">
         {renderChart(config, data)}
       </ResponsiveContainer>
+      {config.type !== 'pie' && config.yAxis && config.yAxis.length > 0 && (
+        <DataLegend config={config} colors={colors} />
+      )}
     </div>
   );
 };
@@ -184,6 +188,24 @@ const DataTable = ({ data, dataset }: { data: any[]; dataset: Dataset }) => {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+};
+
+const DataLegend = ({ config, colors }: { config: ChartConfig; colors: string[] }) => {
+  return (
+    <div className="px-4 py-3 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+      <div className="flex flex-wrap gap-4">
+        {config.yAxis?.map((column, index) => (
+          <div key={column} className="flex items-center gap-2">
+            <div
+              className="w-3 h-3 rounded-sm"
+              style={{ backgroundColor: colors[index % colors.length] }}
+            />
+            <span className="text-sm font-medium text-gray-700">{column}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

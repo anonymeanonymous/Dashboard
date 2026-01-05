@@ -1,4 +1,4 @@
-import { Plus, Download, Share2, Trash2, HelpCircle, Eye, BarChart3, Save } from 'lucide-react';
+import { Plus, Download, Image, ArrowLeft, HelpCircle, Eye, BarChart3, Save } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Dataset, ChartConfig, LayoutItem } from '../types/dashboard';
 import { DashboardGrid } from '../components/DashboardGrid';
@@ -216,7 +216,7 @@ export const DashboardPage = ({ datasets, onBack, dashboardId, dashboardData }: 
                 className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 title="Export PNG"
               >
-                <Share2 className="w-5 h-5" />
+                <Image className="w-5 h-5" />
               </button>
             </div>
 
@@ -225,7 +225,7 @@ export const DashboardPage = ({ datasets, onBack, dashboardId, dashboardData }: 
               className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               title="Back"
             >
-              <Trash2 className="w-5 h-5" />
+              <ArrowLeft className="w-5 h-5" />
             </button>
           </div>
         </div>
