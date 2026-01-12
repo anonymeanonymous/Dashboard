@@ -1,14 +1,13 @@
-import { BarChart3, LogOut, Settings, Home } from 'lucide-react';
+import { BarChart3, Settings, Home } from 'lucide-react';
 
 interface MainLayoutProps {
   children: React.ReactNode;
   currentPage: 'home' | 'dashboard';
   onPageChange: (page: 'home' | 'dashboard') => void;
   fileName?: string;
-  onLogout?: () => void;
 }
 
-export const MainLayout = ({ children, currentPage, onPageChange, fileName, onLogout }: MainLayoutProps) => {
+export const MainLayout = ({ children, currentPage, onPageChange, fileName }: MainLayoutProps) => {
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
       <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -46,16 +45,6 @@ export const MainLayout = ({ children, currentPage, onPageChange, fileName, onLo
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
               <Settings className="w-5 h-5" />
             </button>
-
-            {onLogout && (
-              <button
-                onClick={onLogout}
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-                title="Sign out"
-              >
-                <LogOut className="w-5 h-5" />
-              </button>
-            )}
           </div>
         </div>
       </header>
