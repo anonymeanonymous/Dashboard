@@ -39,7 +39,7 @@ export const MainLayout = ({ children, currentPage, onPageChange, fileName }: Ma
               }`}
             >
               <Home className="w-4 h-4" />
-              <span className="text-sm font-medium">Home</span>
+              <span className="text-sm font-medium">Etat 0</span>
             </button>
 
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
