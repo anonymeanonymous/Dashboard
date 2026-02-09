@@ -66,28 +66,41 @@ export const ChartTypeSelector = ({ selectedType, onTypeSelect, dataset }: Chart
   ];
 
   return (
-    <div className="space-y-3">
-      <h3 className="font-semibold text-gray-900">Chart Type</h3>
-      <div className="grid grid-cols-2 gap-2">
+    <div className="space-y-4">
+      <div>
+        <h3 className="font-semibold text-gray-900 mb-2">Chart Type</h3>
+        <div className="inline-block bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full mb-4">
+          Selected: <span className="font-bold">{chartTypes.find(c => c.value === selectedType)?.label}</span>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
         {chartTypes.map(chartType => (
           <button
             key={chartType.value}
             onClick={() => onTypeSelect(chartType.value)}
             disabled={!chartType.suitable}
-            className={`p-3 rounded-lg border-2 transition-all text-left ${
+            className={`p-4 rounded-xl border-2 transition-all text-left group ${
               selectedType === chartType.value
-                ? 'border-blue-500 bg-blue-50'
+                ? 'border-blue-500 bg-gradient-to-br from-blue-50 to-blue-100 shadow-md'
                 : chartType.suitable
-                ? 'border-gray-200 bg-white hover:border-gray-300'
+                ? 'border-gray-200 bg-white hover:border-blue-300 hover:shadow-sm'
                 : 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed'
             }`}
             title={chartType.suitable ? '' : 'Not suitable for this dataset'}
           >
-            <div className={`${selectedType === chartType.value ? 'text-blue-600' : 'text-gray-600'} mb-1`}>
+            <div className={`${selectedType === chartType.value ? 'text-blue-600' : 'text-gray-600 group-hover:text-blue-500'} mb-2 transition-colors`}>
               {chartType.icon}
             </div>
-            <div className="text-sm font-medium text-gray-900">{chartType.label}</div>
-            <div className="text-xs text-gray-500">{chartType.description}</div>
+            <div className="text-sm font-semibold text-gray-900">{chartType.label}</div>
+            <div className="text-xs text-gray-500 mt-1">{chartType.description}</div>
+            {!chartType.suitable && (
+              <div className="text-xs text-red-600 mt-2 font-medium">Not available</div>
+            )}
+            {selectedType === chartType.value && (
+              <div className="text-xs text-blue-600 mt-2 font-semibold flex items-center gap-1">
+                ✓ Selected
+              </div>
+            )}
           </button>
         ))}
       </div>

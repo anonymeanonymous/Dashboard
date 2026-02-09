@@ -58,7 +58,14 @@ export const AddChartPanel = ({ dataset, onAddChart, onClose }: AddChartPanelPro
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
         <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50">
-          <h2 className="text-2xl font-bold text-gray-900">Create New Chart</h2>
+          <div className="flex-1">
+            <h2 className="text-2xl font-bold text-gray-900">Create New Chart</h2>
+            {type && (
+              <p className="text-sm text-gray-600 mt-1">
+                Chart Type: <span className="font-semibold text-blue-600 capitalize">{type === 'line' ? 'Line Chart' : type === 'area' ? 'Area Chart' : type === 'pie' ? 'Pie Chart' : type === 'metric' ? 'Metric Card' : type === 'table' ? 'Data Table' : 'Bar Chart'}</span>
+              </p>
+            )}
+          </div>
           <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded-lg transition-colors">
             <X className="w-6 h-6" />
           </button>
@@ -66,6 +73,16 @@ export const AddChartPanel = ({ dataset, onAddChart, onClose }: AddChartPanelPro
 
         <div className="flex-1 overflow-hidden flex">
           <div className="w-1/2 overflow-y-auto p-6 space-y-6 border-r border-gray-200">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
+            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Active Configuration</p>
+            <p className="text-sm text-gray-700">
+              {title ? <span><strong>Title:</strong> {title}</span> : 'Enter a chart title'}
+            </p>
+            <p className="text-sm text-gray-700 mt-1">
+              <strong>Type:</strong> <span className="text-blue-600 font-semibold capitalize">{type === 'line' ? 'Line Chart' : type === 'area' ? 'Area Chart' : type === 'pie' ? 'Pie Chart' : type === 'metric' ? 'Metric Card' : type === 'table' ? 'Data Table' : 'Bar Chart'}</span>
+            </p>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Chart Title</label>
             <input
