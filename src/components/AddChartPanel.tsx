@@ -74,13 +74,30 @@ export const AddChartPanel = ({ dataset, onAddChart, onClose }: AddChartPanelPro
         <div className="flex-1 overflow-hidden flex">
           <div className="w-1/2 overflow-y-auto p-6 space-y-6 border-r border-gray-200">
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1">Active Configuration</p>
-            <p className="text-sm text-gray-700">
-              {title ? <span><strong>Title:</strong> {title}</span> : 'Enter a chart title'}
-            </p>
-            <p className="text-sm text-gray-700 mt-1">
-              <strong>Type:</strong> <span className="text-blue-600 font-semibold capitalize">{type === 'line' ? 'Line Chart' : type === 'area' ? 'Area Chart' : type === 'pie' ? 'Pie Chart' : type === 'metric' ? 'Metric Card' : type === 'table' ? 'Data Table' : 'Bar Chart'}</span>
-            </p>
+            <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-3">Active Configuration</p>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-700">
+                {title ? <span><strong>Title:</strong> {title}</span> : <span className="text-gray-400">Enter a chart title</span>}
+              </p>
+              <p className="text-sm text-gray-700">
+                <strong>Type:</strong> <span className="text-blue-600 font-semibold capitalize">{type === 'line' ? 'Line Chart' : type === 'area' ? 'Area Chart' : type === 'pie' ? 'Pie Chart' : type === 'metric' ? 'Metric Card' : type === 'table' ? 'Data Table' : 'Bar Chart'}</span>
+              </p>
+              {type !== 'table' && type !== 'metric' && (
+                <>
+                  <p className="text-sm text-gray-700">
+                    <strong>X-Axis:</strong> {xAxis ? <span className="text-green-600 font-medium">{xAxis}</span> : <span className="text-gray-400">Not selected</span>}
+                  </p>
+                  <p className="text-sm text-gray-700">
+                    <strong>Y-Axis:</strong> {yAxis.length > 0 ? <span className="text-green-600 font-medium">{yAxis.join(', ')}</span> : <span className="text-gray-400">None selected</span>}
+                  </p>
+                </>
+              )}
+              {type === 'metric' && (
+                <p className="text-sm text-gray-700">
+                  <strong>Metric:</strong> {yAxis[0] ? <span className="text-green-600 font-medium">{yAxis[0]}</span> : <span className="text-gray-400">Not selected</span>}
+                </p>
+              )}
+            </div>
           </div>
 
           <div>
@@ -102,41 +119,62 @@ export const AddChartPanel = ({ dataset, onAddChart, onClose }: AddChartPanelPro
 
           {type !== 'table' && type !== 'metric' && (
             <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">X-Axis (Category)</label>
-                <select
-                  value={xAxis}
-                  onChange={(e) => setXAxis(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">Select a column</option>
-                  {allColumns.map(col => (
-                    <option key={col.name} value={col.name}>{col.name}</option>
-                  ))}
-                </select>
+              <div className="border-t pt-4">
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                    <span className="inline-block w-6 h-6 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs font-bold">X</span>
+                    X-Axis (Categories/Labels)
+                  </label>
+                  <select
+                    value={xAxis}
+                    onChange={(e) => setXAxis(e.target.value)}
+                    className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors ${
+                      xAxis ? 'border-green-300 bg-green-50' : 'border-gray-300'
+                    }`}
+                  >
+                    <option value="">Select a column</option>
+                    {allColumns.map(col => (
+                      <option key={col.name} value={col.name}>{col.name}</option>
+                    ))}
+                  </select>
+                  {xAxis && <p className="text-xs text-green-600 mt-2 font-medium">✓ Selected: {xAxis}</p>}
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Y-Axis (Values)</label>
-                <div className="border border-gray-300 rounded-md p-3 space-y-2 max-h-48 overflow-y-auto">
-                  {numericColumns.map(col => (
-                    <label key={col.name} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        checked={yAxis.includes(col.name)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setYAxis([...yAxis, col.name]);
-                          } else {
-                            setYAxis(yAxis.filter(y => y !== col.name));
-                          }
-                        }}
-                        className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                      />
-                      <span className="ml-2 text-sm text-gray-700">{col.name}</span>
-                    </label>
-                  ))}
+                <label className="block text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                  <span className="inline-block w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">Y</span>
+                  Y-Axis (Numeric Values)
+                </label>
+                <div className="border-2 border-gray-300 rounded-lg p-4 space-y-3 max-h-56 overflow-y-auto bg-white">
+                  {numericColumns.length === 0 ? (
+                    <p className="text-sm text-gray-500 py-4 text-center">No numeric columns available</p>
+                  ) : (
+                    numericColumns.map(col => (
+                      <label key={col.name} className="flex items-center p-2 rounded-lg hover:bg-blue-50 cursor-pointer transition-colors">
+                        <input
+                          type="checkbox"
+                          checked={yAxis.includes(col.name)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setYAxis([...yAxis, col.name]);
+                            } else {
+                              setYAxis(yAxis.filter(y => y !== col.name));
+                            }
+                          }}
+                          className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                        />
+                        <span className="ml-3 text-sm font-medium text-gray-700">{col.name}</span>
+                        {yAxis.includes(col.name) && (
+                          <span className="ml-auto text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded font-semibold">Selected</span>
+                        )}
+                      </label>
+                    ))
+                  )}
                 </div>
+                {yAxis.length > 0 && (
+                  <p className="text-xs text-green-600 mt-3 font-medium">✓ {yAxis.length} column{yAxis.length !== 1 ? 's' : ''} selected</p>
+                )}
               </div>
             </>
           )}
