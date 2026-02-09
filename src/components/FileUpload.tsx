@@ -1,8 +1,9 @@
-import { Upload, CheckCircle, AlertCircle, Loader, BarChart3 } from 'lucide-react';
+import { Upload, CheckCircle, AlertCircle, Loader, BarChart3, PlusCircle } from 'lucide-react';
 import { parseExcelFile } from '../utils/excelParser';
 import { Dataset } from '../types/dashboard';
 import { analyzeDataset } from '../utils/dataAnalyzer';
 import { useState } from 'react';
+import { ManualDataEntry } from './ManualDataEntry';
 
 interface FileUploadProps {
   onDataLoaded: (datasets: Dataset[]) => void;
@@ -13,6 +14,7 @@ export const FileUpload = ({ onDataLoaded }: FileUploadProps) => {
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [preview, setPreview] = useState<Dataset | null>(null);
+  const [mode, setMode] = useState<'choose' | 'upload' | 'manual'>('choose');
 
   const handleFileChange = async (file: File | null) => {
     if (!file) return;
@@ -69,6 +71,53 @@ export const FileUpload = ({ onDataLoaded }: FileUploadProps) => {
       handleFileChange(file);
     }
   };
+
+  if (mode === 'manual') {
+    return (
+      <ManualDataEntry
+        onDataLoaded={(data) => {
+          onDataLoaded(data);
+          setMode('choose');
+        }}
+        onCancel={() => setMode('choose')}
+      />
+    );
+  }
+
+  if (mode === 'choose') {
+    return (
+      <div className="w-full">
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-6 text-white">
+            <h3 className="text-2xl font-bold mb-2">Choose Import Method</h3>
+            <p className="text-blue-100">Select how you want to import your data</p>
+          </div>
+
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button
+                onClick={() => setMode('upload')}
+                className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-blue-300 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all group"
+              >
+                <Upload className="w-12 h-12 text-blue-500 mb-3 group-hover:scale-110 transition-transform" />
+                <h4 className="text-lg font-semibold text-gray-900 mb-1">Upload Excel File</h4>
+                <p className="text-sm text-gray-600 text-center">Import data from .xlsx or .xls files</p>
+              </button>
+
+              <button
+                onClick={() => setMode('manual')}
+                className="flex flex-col items-center justify-center p-8 border-2 border-dashed border-green-300 rounded-xl hover:border-green-500 hover:bg-green-50 transition-all group"
+              >
+                <PlusCircle className="w-12 h-12 text-green-500 mb-3 group-hover:scale-110 transition-transform" />
+                <h4 className="text-lg font-semibold text-gray-900 mb-1">Enter Data Manually</h4>
+                <p className="text-sm text-gray-600 text-center">Create custom columns and fill data</p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (preview) {
     const analysis = analyzeDataset(preview.columns, preview.rows);
@@ -195,10 +244,13 @@ export const FileUpload = ({ onDataLoaded }: FileUploadProps) => {
             {/* Actions */}
             <div className="flex gap-3 pt-4 border-t border-gray-200">
               <button
-                onClick={() => setPreview(null)}
+                onClick={() => {
+                  setPreview(null);
+                  setMode('choose');
+                }}
                 className="flex-1 px-4 py-3 bg-gray-100 text-gray-900 rounded-lg hover:bg-gray-200 transition-colors font-medium text-sm"
               >
-                Cancel
+                Back
               </button>
               <button
                 onClick={handleConfirmImport}
