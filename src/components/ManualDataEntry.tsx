@@ -10,8 +10,8 @@ interface ManualDataEntryProps {
 export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps) => {
   const [columns, setColumns] = useState<string[]>(['Category', 'Value']);
   const [rows, setRows] = useState<Record<string, any>[]>([
-    { Category: '', Value: 0 },
-    { Category: '', Value: 0 },
+    { 'Row Label': 'Row 1', Category: '', Value: 0 },
+    { 'Row Label': 'Row 2', Category: '', Value: 0 },
   ]);
   const [newColName, setNewColName] = useState('');
   const [colType, setColType] = useState<'string' | 'number'>('string');
@@ -38,6 +38,7 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
 
   const addRow = () => {
     const newRow: Record<string, any> = {};
+    newRow['Row Label'] = `Row ${rows.length + 1}`;
     columns.forEach(col => {
       newRow[col] = col === 'Value' ? 0 : '';
     });
@@ -65,13 +66,17 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
     const dataset: Dataset = {
       id: `manual-${Date.now()}`,
       name: 'Manual Data',
-      columns: columns.map(col => ({
-        name: col,
-        type: col === 'Value' ? 'number' : 'string',
-        values: rows.map(r => r[col] ?? (col === 'Value' ? 0 : '')),
-      })),
+      columns: [
+        { name: 'Row Label', type: 'string', values: rows.map(r => r['Row Label']) },
+        ...columns.map(col => ({
+          name: col,
+          type: col === 'Value' ? 'number' : 'string',
+          values: rows.map(r => r[col] ?? (col === 'Value' ? 0 : '')),
+        }))
+      ],
       rows: rows.map(row => {
         const newRow: Record<string, any> = {};
+        newRow['Row Label'] = row['Row Label'];
         columns.forEach(col => {
           newRow[col] = col === 'Value' ? Number(row[col]) || 0 : row[col];
         });
@@ -148,8 +153,8 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
             <table className="w-full text-sm">
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
-                  <th className="px-4 py-3 text-left font-semibold text-gray-900 w-12">
-                    #
+                  <th className="px-4 py-3 text-left font-semibold text-gray-900 min-w-[150px]">
+                    Row Label
                   </th>
                   {columns.map(col => (
                     <th key={col} className="px-4 py-3 text-left font-semibold text-gray-900 min-w-[150px]">
@@ -164,7 +169,15 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
               <tbody>
                 {rows.map((row, rowIdx) => (
                   <tr key={rowIdx} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 text-gray-600 font-medium">{rowIdx + 1}</td>
+                    <td className="px-4 py-3">
+                      <input
+                        type="text"
+                        value={row['Row Label'] ?? ''}
+                        onChange={(e) => updateCell(rowIdx, 'Row Label', e.target.value)}
+                        placeholder="Enter row label"
+                        className="w-full px-3 py-2 border border-blue-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm font-semibold text-blue-900"
+                      />
+                    </td>
                     {columns.map(col => (
                       <td key={`${rowIdx}-${col}`} className="px-4 py-3">
                         <input
