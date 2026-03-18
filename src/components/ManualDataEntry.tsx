@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Plus, Trash2, CheckCircle } from 'lucide-react';
-import { Dataset } from '../types/dashboard';
+import { Dataset, ChartType } from '../types/dashboard';
+import { ChartTypeSelector } from './ChartTypeSelector';
 
 interface ManualDataEntryProps {
   onDataLoaded: (datasets: Dataset[]) => void;
@@ -15,6 +16,7 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
   ]);
   const [newColName, setNewColName] = useState('');
   const [colType, setColType] = useState<'string' | 'number'>('string');
+  const [selectedChartType, setSelectedChartType] = useState<ChartType>('bar');
 
   const addColumn = () => {
     if (newColName.trim()) {
@@ -66,6 +68,7 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
     const dataset: Dataset = {
       id: `manual-${Date.now()}`,
       name: 'Manual Data',
+      preferredChartType: selectedChartType,
       columns: [
         { name: 'Row Label', type: 'string', values: rows.map(r => r['Row Label']) },
         ...columns.map(col => ({
@@ -95,6 +98,27 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
       </div>
 
       <div className="p-6 space-y-6">
+        {/* Chart Type Selection */}
+        <div className="bg-blue-50 border border-blue-200 rounded-xl p-6">
+          <ChartTypeSelector
+            selectedType={selectedChartType}
+            onTypeSelect={setSelectedChartType}
+            dataset={{
+              id: 'preview',
+              name: 'Preview',
+              columns: [
+                { name: 'Row Label', type: 'string', values: rows.map(r => r['Row Label']) },
+                ...columns.map(col => ({
+                  name: col,
+                  type: col === 'Value' ? 'number' : 'string',
+                  values: rows.map(r => r[col] ?? (col === 'Value' ? 0 : '')),
+                }))
+              ],
+              rows: rows,
+            }}
+          />
+        </div>
+
         {/* Column Management */}
         <div>
           <h4 className="text-lg font-semibold text-gray-900 mb-4">Manage Columns</h4>

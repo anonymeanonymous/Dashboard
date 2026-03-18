@@ -9,9 +9,10 @@ export interface DataColumn {
 export interface Dataset {
   id: string;
   name: string;
-  sheetName: string;
+  sheetName?: string;
   columns: DataColumn[];
   rows: any[];
+  preferredChartType?: ChartType;
 }
 
 export interface ChartConfig {
