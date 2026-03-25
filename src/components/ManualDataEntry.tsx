@@ -60,7 +60,10 @@ export const ManualDataEntry = ({ onDataLoaded, onCancel }: ManualDataEntryProps
   };
 
   const handleConfirm = () => {
-    if (rows.some(row => !Object.values(row).some(v => v !== '' && v !== 0))) {
+    if (rows.some(row =>
+      !row['Row Label']?.toString().trim() ||
+      columns.some(col => row[col] === '' || row[col] === undefined)
+    )) {
       alert('Please fill in all data cells');
       return;
     }

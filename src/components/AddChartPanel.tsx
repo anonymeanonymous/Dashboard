@@ -13,7 +13,7 @@ interface AddChartPanelProps {
 
 export const AddChartPanel = ({ dataset, onAddChart, onClose }: AddChartPanelProps) => {
   const [title, setTitle] = useState('');
-  const [type, setType] = useState<ChartType>('bar');
+  const [type, setType] = useState<ChartType>(dataset.preferredChartType || 'bar');
   const [xAxis, setXAxis] = useState('');
   const [yAxis, setYAxis] = useState<string[]>([]);
   const [aggregation, setAggregation] = useState<'sum' | 'avg' | 'count' | 'min' | 'max'>('sum');
